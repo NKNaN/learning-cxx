@@ -10,6 +10,10 @@ struct Tensor4D {
     Tensor4D(unsigned int const shape_[4], T const *data_) {
         unsigned int size = 1;
         // TODO: 填入正确的 shape 并计算 size
+        std::memcpy(shape, shape_, 4 * sizeof(unsigned int));
+        for (int i = 0; i < 4; ++i) {
+            size *= shape_[i];
+        }
         data = new T[size];
         std::memcpy(data, data_, size * sizeof(T));
     }
@@ -28,6 +32,27 @@ struct Tensor4D {
     // 则 `this` 与 `others` 相加时，3 个形状为 `[1, 2, 1, 4]` 的子张量各自与 `others` 对应项相加。
     Tensor4D &operator+=(Tensor4D const &others) {
         // TODO: 实现单向广播的加法
+        unsigned int other_dim0 = 0;
+        for (unsigned int dim0 = 0; dim0 < shape[0]; ++dim0) {
+            unsigned int other_dim1 = 0;
+            for (unsigned int dim1 = 0; dim1 < shape[1]; ++dim1) {
+                unsigned int other_dim2 = 0;
+                for (unsigned int dim2 = 0; dim2 < shape[2]; ++dim2) {
+                    unsigned int other_dim3 = 0;
+                    for (unsigned int dim3 = 0; dim3 < shape[3]; ++dim3) {
+                        auto idx = dim3 + dim2 * shape[3] + dim1 * shape[3] * shape[2] + dim0 * shape[3] * shape[2] * shape[1];
+                        auto other_idx = other_dim3 + other_dim2 * others.shape[3] + other_dim1 * others.shape[3] * others.shape[2] + other_dim0 * others.shape[3] * others.shape[2] * others.shape[1];
+                        data[idx] += others.data[other_idx];
+
+                        if (shape[3] == others.shape[3]) ++other_dim3;
+                    }
+                    if (shape[2] == others.shape[2]) ++other_dim2;
+                }
+                if (shape[1] == others.shape[1]) ++other_dim1;
+            }
+            if (shape[0] == others.shape[0]) ++other_dim0;
+        }
+
         return *this;
     }
 };
