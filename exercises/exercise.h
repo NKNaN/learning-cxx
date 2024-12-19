@@ -2,8 +2,11 @@
 #define __EXERCISE_H__
 
 #include <iostream>
+#include <string>
 #include <string.h>
 #include <utility>
+#include <memory>
+#include <memory.h>
 
 #define ASSERT(COND, MSG)                                                                         \
     if (!(COND)) {                                                                                \

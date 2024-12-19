@@ -1,6 +1,7 @@
 ﻿#include "../exercise.h"
 #include <memory>
 #include <string>
+#include <string.h>
 #include <vector>
 
 // READ: `std::unique_ptr` <https://zh.cppreference.com/w/cpp/memory/unique_ptr>
